@@ -23,10 +23,10 @@ namespace Contacts.classes
             return PostHttpReponse(url, user);            
         }
 
-        public static string GetStringJSonTemplate(long iduser)
+        public static string GetStringJSonTemplate(User user)
         {            
-            string url = String.Format(@"http://localhost:8080/api-template/{0}", iduser);
-            return GetHttpReponse(url);
+            string url = @"http://localhost:8080/api-template";
+            return PostHttpReponse(url,user);
         }
 
         public static string GetStringJSonUser(string login,string password)

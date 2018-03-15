@@ -129,7 +129,7 @@ namespace Contacts
             if (user == null)
                 return;
 
-            Template template = GestionContacts.GetTemplate(ApiContact.GetStringJSonTemplate(user.getIduser()));
+            Template template = GestionContacts.GetTemplate(ApiContact.GetStringJSonTemplate(user));
 
             if (template!=null)
             {

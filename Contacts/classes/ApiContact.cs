@@ -63,5 +63,32 @@ namespace Contacts.classes
 
             return strJson;
         }
+
+        public static string GetStringJSonUser(string login,string pwd)
+        {
+            String strJson = string.Empty;
+            string url = @"http://localhost:8080/api-get_user/{0}/[1}";
+
+            url = string.Format(url, iduser);
+
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+            request.AutomaticDecompression = DecompressionMethods.GZip;
+
+            try
+            {
+                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                using (Stream stream = response.GetResponseStream())
+                using (StreamReader reader = new StreamReader(stream))
+                {
+                    strJson = reader.ReadToEnd();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+            return strJson;
+        }
     }
 }

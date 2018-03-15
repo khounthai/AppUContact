@@ -15,8 +15,6 @@ namespace Contacts.entity
         private string libelle;
         [JsonProperty("regex")]
         private String regex;
-           
-
 
         public DataType() { }
 

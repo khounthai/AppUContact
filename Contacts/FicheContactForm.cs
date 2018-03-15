@@ -14,11 +14,17 @@ namespace Contacts
     public partial class FicheContactForm : Form
     {
         Template template;
+        
+        System.Text.RegularExpressions.Regex rEMail = new System.Text.RegularExpressions.Regex(@"^[a-zA-Z][\w\.-]*[a-zA-Z0-9]@[a-zA-Z0-9][\w\.-]*[a-zA-Z0-9]\.[a-zA-Z][a-zA-Z\.]*[a-zA-Z]$");
+
+        private bool isValidForm;
 
         public FicheContactForm(Template template)
         {
             InitializeComponent();
             this.template = template;
+            this.InitialiseChamp();
+            toolStripLabelInfo.Text = "";
         }
 
         private void InitialiseChamp()
@@ -26,7 +32,7 @@ namespace Contacts
             if (template == null)
                 return;
 
-            int x=5, y=5;
+            int x=20, y=20;
             
             foreach (Champ c in template.getChamps())
             {
@@ -39,24 +45,80 @@ namespace Contacts
 
                 Control ctrl=null;
 
-                if (c.getPreselectionsize() > 0)
+                if (c.getDatatype().getLibelle()=="DATE")
+                {
+                    ctrl = new DateTimePicker();
+                }
+                else if (c.getDatatype().getLibelle() == "EMAIL")
                 {
                     ctrl = new TextBox();
-                }else
+                    ctrl.Leave += Ctrl_Leave;                  
+                    ctrl.LostFocus += Ctrl_Leave;
+                    ctrl.KeyPress += Ctrl_KeyPress;
+                }
+                else if (c.getPreselectionsize() > 0)
                 {
-                    ComboBox cb = new ComboBox();
+                    ctrl = new ComboBox();
+
                     foreach (string s in c.getPreselection())
                     {
-                        cb.Items.Add(s);
-                    }
+                        ((ComboBox)ctrl).Items.Add(s);
+                    }                    
+
+                }else
+                {
+                    ctrl = new TextBox();
+                    ctrl.KeyPress += Ctrl_KeyPress;
                 }
 
-                ctrl.Width = 100;
-                ctrl.Location = new Point(l.Location.X + 10, y);
+                ctrl.Width = 200;
+                ctrl.Location = new Point(120, y);
+                ctrl.Parent = this;
 
-                y = y + ctrl.Height + 5;
+                y = y + ctrl.Height + 10;
 
             }
+
+            Button btnAjouter = new Button();
+            btnAjouter.Text = "Ajouter";
+            btnAjouter.Width = 100;
+            btnAjouter.Location = new Point(x, y);
+            btnAjouter.Parent = this;
+            btnAjouter.Click += BtnAjouter_Click;
+
+            Button btnQuitter = new Button();
+            btnQuitter.Text = "Quitter";
+            btnQuitter.Width = 100;
+            btnQuitter.Location = new Point(btnAjouter.Width+40, y);
+            btnQuitter.Parent = this;
+            btnQuitter.Click += BtnQuitter_Click;
+        }
+
+        private void Ctrl_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            toolStripLabelInfo.Text = "";
+        }
+
+    
+        private void Ctrl_Leave(object sender, EventArgs e)
+        {
+            TextBox txtb=(TextBox) sender;
+
+            if (!rEMail.IsMatch(txtb.Text) && !string.IsNullOrEmpty(txtb.Text))
+            {
+                isValidForm = false;
+                toolStripLabelInfo.Text = "Erreur sur la saisie de l'email";
+            }
+        }
+
+        private void BtnQuitter_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
+
+        private void BtnAjouter_Click(object sender, EventArgs e)
+        {
+            return;
         }
     }
 }

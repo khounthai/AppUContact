@@ -1,8 +1,12 @@
-﻿using System;
+﻿using Contacts.entity;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -10,66 +14,30 @@ namespace Contacts.classes
 {
     public class ApiContact
     {
-        public static string GetStringJSonContacts(string login, string pwd)
+        public static string GetStringJSonContacts(User user)
         {
-            String strJson = string.Empty;
-            string url = @"http://localhost:8080/api-liste-contacts/{0}/{1}";
+            string url = @"http://localhost:8080//api-liste-contacts/";
 
-            url = string.Format(url, login, pwd);
+            string postData = "iduser=" + user;
 
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
-            request.AutomaticDecompression = DecompressionMethods.GZip;
-
-            try
-            {
-                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
-                using (Stream stream = response.GetResponseStream())
-                using (StreamReader reader = new StreamReader(stream))
-                {
-                    strJson = reader.ReadToEnd();
-                }
-            }
-            catch ( Exception ex)
-            {
-                throw ex;
-            }
-
-            return strJson;
+            return PostHttpReponse(url, user);            
         }
 
         public static string GetStringJSonTemplate(long iduser)
-        {
-            String strJson = string.Empty;
-            string url = @"http://localhost:8080/api-template/{0}";
-
-            url = string.Format(url, iduser);
-
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
-            request.AutomaticDecompression = DecompressionMethods.GZip;
-
-            try
-            {
-                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
-                using (Stream stream = response.GetResponseStream())
-                using (StreamReader reader = new StreamReader(stream))
-                {
-                    strJson = reader.ReadToEnd();
-                }
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-
-            return strJson;
+        {            
+            string url = String.Format(@"http://localhost:8080/api-template/{0}", iduser);
+            return GetHttpReponse(url);
         }
 
-        public static string GetStringJSonUser(string login,string pwd)
+        public static string GetStringJSonUser(string login,string password)
         {
-            String strJson = string.Empty;
-            string url = @"http://localhost:8080/api-get_user/{0}/[1}";
+            string url = @"http://localhost:8080/api-get-user/"+login+"/"+password;       
+            return GetHttpReponse(url);
+        }
 
-            url = string.Format(url, iduser);
+        private static string GetHttpReponse(string url)
+        {
+            String strResponse = string.Empty;
 
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
             request.AutomaticDecompression = DecompressionMethods.GZip;
@@ -80,7 +48,7 @@ namespace Contacts.classes
                 using (Stream stream = response.GetResponseStream())
                 using (StreamReader reader = new StreamReader(stream))
                 {
-                    strJson = reader.ReadToEnd();
+                    strResponse = reader.ReadToEnd();
                 }
             }
             catch (Exception ex)
@@ -88,7 +56,45 @@ namespace Contacts.classes
                 throw ex;
             }
 
-            return strJson;
+            return strResponse;
+        }
+
+
+        private static string PostHttpReponse(string url,object obj)
+        {
+            String strResponse = string.Empty;
+
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+            request.AutomaticDecompression = DecompressionMethods.GZip;
+
+            try
+            {
+                JsonSerializer serializer = new JsonSerializer();
+                serializer.Converters.Add(new JavaScriptDateTimeConverter());
+                serializer.NullValueHandling = NullValueHandling.Ignore;
+           
+                request.Method = "POST";
+                request.ContentType = "application/json; charset=utf-8";
+
+                string json = JsonConvert.SerializeObject(obj, Formatting.Indented);
+
+                StreamWriter streamwriter = new StreamWriter(request.GetRequestStream());
+
+                streamwriter.Write(json);
+                streamwriter.Flush();
+
+                var response = (HttpWebResponse)request.GetResponse();
+
+                strResponse = new StreamReader(response.GetResponseStream()).ReadToEnd();
+
+                streamwriter.Close();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+            return strResponse;
         }
     }
 }

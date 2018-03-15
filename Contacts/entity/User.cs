@@ -2,6 +2,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,15 +15,24 @@ namespace Contacts.entity
         private long iduser;
         [JsonProperty("login")]
         private String login;
-
+        [JsonProperty("encryptedkey")]
         private byte[] encryptedkey;
+        [JsonProperty("validationkey")]
         private String validationkey; //clé de validation de compte	
-        private Boolean validaccount = false;
+        [JsonProperty("validaccount")]
+        private bool validaccount = false;
+        [JsonProperty("hashedPassword")]
         private byte[] hashedPassword;
+        [JsonProperty("dtcreation")]
         private DateTime dtcreation;
+        [JsonProperty("role")]
         private String role;
+        [JsonProperty("actif")]
         private bool actif;
+        [DefaultValue(0)]
+        [JsonProperty("timestampModifPwd")]
         private long timestampModifPwd;
+        [JsonProperty("encryptedkeypwd")]
         private byte[] encryptedkeypwd;
 
         public User()

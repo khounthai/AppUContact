@@ -28,12 +28,47 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
+            this.toolStrip1 = new System.Windows.Forms.ToolStrip();
+            this.toolStripLabelInfo = new System.Windows.Forms.ToolStripLabel();
+            this.toolStrip1.SuspendLayout();
+            this.SuspendLayout();
+            // 
+            // toolStrip1
+            // 
+            this.toolStrip1.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripLabelInfo});
+            this.toolStrip1.Location = new System.Drawing.Point(0, 464);
+            this.toolStrip1.Name = "toolStrip1";
+            this.toolStrip1.Size = new System.Drawing.Size(432, 25);
+            this.toolStrip1.TabIndex = 0;
+            this.toolStrip1.Text = "toolStrip1";
+            // 
+            // toolStripLabelInfo
+            // 
+            this.toolStripLabelInfo.ForeColor = System.Drawing.Color.Red;
+            this.toolStripLabelInfo.Name = "toolStripLabelInfo";
+            this.toolStripLabelInfo.Size = new System.Drawing.Size(86, 22);
+            this.toolStripLabelInfo.Text = "toolStripLabel1";
+            // 
+            // FicheContactForm
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
+            this.ClientSize = new System.Drawing.Size(432, 489);
+            this.Controls.Add(this.toolStrip1);
+            this.Name = "FicheContactForm";
             this.Text = "FicheConact";
+            this.toolStrip1.ResumeLayout(false);
+            this.toolStrip1.PerformLayout();
+            this.ResumeLayout(false);
+            this.PerformLayout();
+
         }
 
         #endregion
+
+        private System.Windows.Forms.ToolStrip toolStrip1;
+        private System.Windows.Forms.ToolStripLabel toolStripLabelInfo;
     }
 }

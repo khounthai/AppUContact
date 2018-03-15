@@ -21,25 +21,35 @@ namespace Contacts
     public partial class ListeContactsForm : Form
     {
         private HttpClient client = new HttpClient();
-        private long iduser = 0;
+        private User user;
 
         public ListeContactsForm()
         {
             InitializeComponent();
             toolStripLabelInfo.Text = "";
+            user = null;
         }
 
         private void buttonConnexion_Click(object sender, EventArgs e)
         {
+            toolStripLabelInfo.Text = "";
+            dataGridView1.DataSource = null;
+            user = null;
+
             try
             {
-                string strJson = ApiContact.GetStringJSonContacts(textBoxLogin.Text, textBoxPassword.Text);
+                string strJson = ApiContact.GetStringJSonUser(textBoxLogin.Text, textBoxPassword.Text);
+                user = GestionContacts.GetUser(strJson);
+
+                if (user==null)
+                {
+                    toolStripLabelInfo.Text = "Utilisateur non valide.";                   
+                }
+
+                strJson = ApiContact.GetStringJSonContacts(user);
+
                 List<Contact> contacts = GestionContacts.GetContacts(strJson);
-
-                //récupère l'iduser
-                if (contacts != null && contacts.Count > 0)
-                    iduser = contacts[0].getIduser();
-
+                
                 SetDataGridView(GetDataTableFromListContacts(contacts));
             }
             catch(Exception ex)
@@ -116,13 +126,15 @@ namespace Contacts
 
         private void buttonAjouter_Click(object sender, EventArgs e)
         {
-            if (iduser == 0)
+            if (user == null)
                 return;
 
-            Template template = GestionContacts.GetTemplate(ApiContact.GetStringJSonTemplate(iduser));
+            Template template = GestionContacts.GetTemplate(ApiContact.GetStringJSonTemplate(user.getIduser()));
+
             if (template!=null)
             {
                 FicheContactForm w = new FicheContactForm(template);
+                w.ShowDialog();
             }
         }
     }

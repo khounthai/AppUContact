@@ -48,6 +48,7 @@
             this.textBoxLogin.Name = "textBoxLogin";
             this.textBoxLogin.Size = new System.Drawing.Size(253, 20);
             this.textBoxLogin.TabIndex = 0;
+            this.textBoxLogin.Text = "user1@hotmail.fr";
             // 
             // textBoxPassword
             // 
@@ -55,6 +56,7 @@
             this.textBoxPassword.Name = "textBoxPassword";
             this.textBoxPassword.Size = new System.Drawing.Size(253, 20);
             this.textBoxPassword.TabIndex = 1;
+            this.textBoxPassword.Text = "user1";
             // 
             // label1
             // 
@@ -76,7 +78,7 @@
             // 
             // buttonConnexion
             // 
-            this.buttonConnexion.Location = new System.Drawing.Point(85, 69);
+            this.buttonConnexion.Location = new System.Drawing.Point(344, 42);
             this.buttonConnexion.Name = "buttonConnexion";
             this.buttonConnexion.Size = new System.Drawing.Size(75, 23);
             this.buttonConnexion.TabIndex = 4;
@@ -87,9 +89,9 @@
             // dataGridView1
             // 
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.Location = new System.Drawing.Point(30, 98);
+            this.dataGridView1.Location = new System.Drawing.Point(30, 71);
             this.dataGridView1.Name = "dataGridView1";
-            this.dataGridView1.Size = new System.Drawing.Size(870, 335);
+            this.dataGridView1.Size = new System.Drawing.Size(870, 362);
             this.dataGridView1.TabIndex = 6;
             // 
             // toolStrip1
@@ -99,7 +101,7 @@
             this.toolStripLabelInfo});
             this.toolStrip1.Location = new System.Drawing.Point(0, 471);
             this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(962, 25);
+            this.toolStrip1.Size = new System.Drawing.Size(909, 25);
             this.toolStrip1.TabIndex = 7;
             this.toolStrip1.Text = "toolStrip1";
             // 
@@ -133,7 +135,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(962, 496);
+            this.ClientSize = new System.Drawing.Size(909, 496);
             this.Controls.Add(this.buttonSupprimer);
             this.Controls.Add(this.buttonAjouter);
             this.Controls.Add(this.toolStrip1);

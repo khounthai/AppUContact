@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FicheContactForm));
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.toolStripLabelInfo = new System.Windows.Forms.ToolStripLabel();
             this.toolStrip1.SuspendLayout();
@@ -55,9 +56,12 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("$this.BackgroundImage")));
+            this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.ClientSize = new System.Drawing.Size(432, 489);
             this.Controls.Add(this.toolStrip1);
             this.Name = "FicheContactForm";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "FicheConact";
             this.toolStrip1.ResumeLayout(false);
             this.toolStrip1.PerformLayout();

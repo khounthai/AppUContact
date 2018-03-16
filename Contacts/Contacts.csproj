@@ -50,6 +50,7 @@
   <ItemGroup>
     <Compile Include="classes\ApiContact.cs" />
     <Compile Include="classes\GestionContacts.cs" />
+    <Compile Include="entity\ContactWrapper.cs" />
     <Compile Include="FicheContactForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -104,6 +105,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="entity\User.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="images\contact-bluewin.jpg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

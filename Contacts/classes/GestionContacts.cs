@@ -36,5 +36,6 @@ namespace Contacts.classes
             User user = JsonConvert.DeserializeObject<User>(strJson, setting);
             return user;
         }
+
     }
 }

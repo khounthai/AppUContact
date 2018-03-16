@@ -18,20 +18,31 @@ using Contacts.classes;
 
 namespace Contacts
 {
+
     public partial class ListeContactsForm : Form
     {
         private HttpClient client = new HttpClient();
         private User user;
+        private delegate void DelegateChargerListeContact();
 
         public ListeContactsForm()
         {
             InitializeComponent();
             toolStripLabelInfo.Text = "";
             user = null;
+            this.Text = "App contact";
+            this.dataGridView1.ReadOnly = true;
         }
 
         private void buttonConnexion_Click(object sender, EventArgs e)
         {
+            this.ChargerListeContacts();
+        }
+
+        private void ChargerListeContacts()
+        {
+            this.Cursor = Cursors.WaitCursor;
+
             toolStripLabelInfo.Text = "";
             dataGridView1.DataSource = null;
             user = null;
@@ -41,30 +52,48 @@ namespace Contacts
                 string strJson = ApiContact.GetStringJSonUser(textBoxLogin.Text, textBoxPassword.Text);
                 user = GestionContacts.GetUser(strJson);
 
-                if (user==null)
+                if (user == null)
                 {
-                    toolStripLabelInfo.Text = "Utilisateur non valide.";                   
+                    toolStripLabelInfo.Text = "Utilisateur non valide.";
                 }
 
                 strJson = ApiContact.GetStringJSonContacts(user);
 
                 List<Contact> contacts = GestionContacts.GetContacts(strJson);
-                
+
                 SetDataGridView(GetDataTableFromListContacts(contacts));
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 toolStripLabelInfo.Text = "Erreur de connexion: " + ex.Message;
             }
+            finally
+            {
+                this.Cursor = Cursors.Default;
+            }
         }
-     
+
         private void SetDataGridView(DataTable table)
         {
             this.dataGridView1.DataSource = table;
+            toolStripLabelInfo.Text = "";
 
             //cache la colonne des idcontact
-            if (table!=null)
+            if (table != null)
+            {
                 this.dataGridView1.Columns["idcontact"].Visible = false;
+
+                int x = 0;
+
+                foreach(DataGridViewColumn c in dataGridView1.Columns)
+                {
+                    x = x + c.Width;
+                }
+
+                dataGridView1.Size = new Size(x + 10, dataGridView1.Height);
+
+                toolStripLabelInfo.Text = "Nombre de contacts: " + table.Rows.Count;
+            }
         }
 
         private DataTable GetDataTableFromListContacts(List<Contact> contacts)
@@ -133,7 +162,8 @@ namespace Contacts
 
             if (template!=null)
             {
-                FicheContactForm w = new FicheContactForm(template);
+                DelegateChargerListeContact d = ChargerListeContacts;
+                FicheContactForm w = new FicheContactForm(template,user.getIduser(),d);
                 w.ShowDialog();
             }
         }

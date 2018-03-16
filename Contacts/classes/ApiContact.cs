@@ -16,10 +16,7 @@ namespace Contacts.classes
     {
         public static string GetStringJSonContacts(User user)
         {
-            string url = @"http://localhost:8080//api-liste-contacts/";
-
-            string postData = "iduser=" + user;
-
+            string url = @"http://localhost:8080//api-liste-contacts/";        
             return PostHttpReponse(url, user);            
         }
 
@@ -34,6 +31,13 @@ namespace Contacts.classes
             string url = @"http://localhost:8080/api-get-user/"+login+"/"+password;       
             return GetHttpReponse(url);
         }
+
+        public static string SetContact(Contact c)
+        {
+            string url = @"http://localhost:8080/api-set-contact";
+            return PostHttpReponse(url,c);
+        }
+
 
         private static string GetHttpReponse(string url)
         {
@@ -70,14 +74,18 @@ namespace Contacts.classes
             try
             {
                 JsonSerializer serializer = new JsonSerializer();
+                var dateTimeConverter = new IsoDateTimeConverter { DateTimeFormat = "yyyy-MM-dd" };
                 serializer.Converters.Add(new JavaScriptDateTimeConverter());
                 serializer.NullValueHandling = NullValueHandling.Ignore;
            
                 request.Method = "POST";
                 request.ContentType = "application/json; charset=utf-8";
 
-                string json = JsonConvert.SerializeObject(obj, Formatting.Indented);
+                var jsonSettings = new JsonSerializerSettings();
+                jsonSettings.DateFormatString = "yyyy-MM-dd";
 
+                string json = JsonConvert.SerializeObject(obj, jsonSettings);
+                                
                 StreamWriter streamwriter = new StreamWriter(request.GetRequestStream());
 
                 streamwriter.Write(json);

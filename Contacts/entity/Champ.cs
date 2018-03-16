@@ -28,6 +28,8 @@ namespace Contacts.entity
         private int preselectionsize;
         [JsonProperty("accueil")]
         private bool accueil;
+        [JsonIgnore]
+        public bool isValide { set; get; }
 
         public Champ() { }
 

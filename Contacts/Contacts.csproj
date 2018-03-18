@@ -107,7 +107,12 @@
     <Compile Include="entity\User.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="images\61444.png" />
     <Content Include="images\contact-bluewin.jpg" />
+    <Content Include="images\icon-refresh-128.png" />
+    <Content Include="images\img_103926.png" />
+    <Content Include="images\img_72585.png" />
+    <Content Include="images\refresh-icon-614x460.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

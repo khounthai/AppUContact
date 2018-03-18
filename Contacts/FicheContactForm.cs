@@ -1,5 +1,4 @@
-﻿using Contacts.entity;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -10,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Text.RegularExpressions;
 using Contacts.classes;
+using Contacts.entity;
 
 namespace Contacts
 {
@@ -18,17 +18,18 @@ namespace Contacts
         Template template;
         long iduser;
         private Delegate ChargerListeContact;
+        private Contact contact;
 
-        public FicheContactForm(Template template,long iduser, Delegate ChargerListeContact)
+        public FicheContactForm(Template template, long iduser, Delegate ChargerListeContact, Contact contact = null)
         {
             InitializeComponent();
             this.template = template;
+            this.contact = contact;
             this.InitialiseChamp();
             toolStripLabelInfo.Text = "";
             this.Text = "Fiche contact";
             this.iduser = iduser;
             this.ChargerListeContact = ChargerListeContact;
-
         }
 
         private void InitialiseChamp()
@@ -48,13 +49,22 @@ namespace Contacts
                 l.AutoSize = true;
                 l.BackColor = Color.Transparent;
                 l.Location = new Point(x, y);
-                l.Parent = this;
+                l.Parent = this.panel1;
+
+                Donnee d = null;
+
+                if (contact != null)
+                {
+                    d = contact.getDonnees().Where(dd => dd.getIdchamp() == c.getIdchamp()).FirstOrDefault();
+                }
+
 
                 if (c.getDatatype().getLibelle() == "DATE")
                 {
                     ctrl = new DateTimePicker();
+                    if (d != null && !string.IsNullOrEmpty(d.getValeur()))
+                        ((DateTimePicker)ctrl).Value = DateTime.Parse(d.getValeur());
                 }
-
                 else if (c.getPreselectionsize() > 0)
                 {
                     ctrl = new ComboBox();
@@ -62,8 +72,9 @@ namespace Contacts
                     foreach (string s in c.getPreselection())
                     {
                         ((ComboBox)ctrl).Items.Add(s);
+                        if (d != null)
+                            ((ComboBox)ctrl).SelectedItem = d.getValeur();
                     }
-
                 }
                 else
                 {
@@ -77,37 +88,40 @@ namespace Contacts
                         ctrl.LostFocus += Ctrl_Leave;
                     }
 
+                    if (d != null)
+                        ((TextBox)ctrl).Text = d.getValeur();
                 }
 
                 ctrl.Tag = c;
                 ctrl.Width = 200;
                 ctrl.Location = new Point(120, y);
-                ctrl.Parent = this;
+                ctrl.Parent = this.panel1;
 
                 y = y + ctrl.Height + 10;
             }
 
             Button btnAjouter = new Button();
-            btnAjouter.Text = "Ajouter";
+            btnAjouter.Name = "BtnAjouter";
+            btnAjouter.Text =(contact==null? "Ajouter":"Modifier");
             btnAjouter.Width = 100;
             btnAjouter.Location = new Point(x, y);
-            btnAjouter.Parent = this;
-            btnAjouter.Click += BtnAjouter_Click;
+            btnAjouter.Parent = this.panel1;
+            btnAjouter.Click += BtnAjouter_Click;           
 
             Button btnQuitter = new Button();
             btnQuitter.Text = "Quitter";
             btnQuitter.Width = 100;
             btnQuitter.Location = new Point(btnAjouter.Width + 40, y);
-            btnQuitter.Parent = this;
+            btnQuitter.Parent = this.panel1;
             btnQuitter.Click += BtnQuitter_Click;
 
             if (ctrl != null)
             {
                 x = ctrl.Location.X + ctrl.Width + 40;
-                y = toolStrip1.Location.Y;
+                y = toolStrip1.Location.Y-20;
             }
 
-            this.Size = new Size(x, y);
+            this.panel1.Size = new Size(x, y);
 
         }
 
@@ -147,13 +161,20 @@ namespace Contacts
         {
             if (FormIsValid())
             {
-                Contact contact = NouveauContact();
+                contact = NouveauContact(); 
                 contact.setIduser(iduser);
                 ContactWrapper cw = new ContactWrapper();
                 cw.setContact(contact);
                 cw.setIdtemplate(template.getIdtemplate());
                 ApiContact.SetContact(cw);
                 ChargerListeContact.DynamicInvoke();
+
+                if (this.panel1.Controls["BtnAjouter"]!=null && this.panel1.Controls["BtnAjouter"].Text=="Ajouter")                
+                {
+                    contact = null;
+                    this.panel1.Controls.Clear();
+                    this.InitialiseChamp();
+                }
             }
         }
 
@@ -163,7 +184,7 @@ namespace Contacts
             int i = 0;
             while (b && i < this.Controls.Count)
             {
-                Control ctrl = this.Controls[i];
+                Control ctrl = this.panel1.Controls[i];
 
                 if (ctrl.Tag != null && ctrl.Tag.GetType() == typeof(Champ))
                 {
@@ -179,10 +200,12 @@ namespace Contacts
         
         private Contact NouveauContact()
         {
-            Contact contact = null;
-            List<Donnee> donnees;
 
-            contact = new Contact();
+            if (this.contact == null)
+                this.contact = new Contact();
+
+            List<Donnee> donnees;
+            
             contact.setIduser(template.getIduser());
             contact.setDtcreation(DateTime.Now);
             contact.setFavoris(false);
@@ -190,15 +213,26 @@ namespace Contacts
 
             donnees = new List<Donnee>();
 
-            foreach (Control ctrl in this.Controls)
+            foreach (Control ctrl in this.panel1.Controls)
             {
                 if (ctrl.Tag != null && ctrl.Tag.GetType() == typeof(Champ))
                 {
+                    
                     Champ c = (Champ)ctrl.Tag;
 
                     Donnee d = new Donnee();
                     d.setIdchamp(c.getIdchamp());
-                    d.setValeur(ctrl.Text);
+
+                    if (ctrl.GetType() == typeof(DateTimePicker))
+                    {
+                        if ((((DateTimePicker)ctrl).Value.ToShortDateString() != DateTime.Now.ToShortDateString()))
+                            d.setValeur(((DateTimePicker)ctrl).Value.ToString("yyyy-MM-dd"));
+                        else
+                            d.setValeur(null);
+                    }
+                    else
+                        d.setValeur(ctrl.Text);
+
                     donnees.Add(d);
                 }
             }

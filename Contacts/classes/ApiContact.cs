@@ -32,10 +32,16 @@ namespace Contacts.classes
             return GetHttpReponse(url);
         }
 
-        public static string SetContact(Contact c)
+        public static string SetContact(ContactWrapper cw)
         {
             string url = @"http://localhost:8080/api-set-contact";
-            return PostHttpReponse(url,c);
+            return PostHttpReponse(url,cw);
+        }
+
+        public static string DeleteContact(Contact c)
+        {
+            string url = @"http://localhost:8080/api-delete-contact";
+            return PostHttpReponse(url, c);
         }
 
 

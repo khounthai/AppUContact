@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Contacts.entity
 {
-    public class ContactWrapper : Contact
+    public class ContactWrapper
     {
         [JsonProperty("contact")]
         private Contact contact;

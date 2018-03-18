@@ -19,10 +19,14 @@ using Contacts.classes;
 namespace Contacts
 {
 
-    public partial class ListeContactsForm : Form
+    public partial class ListeContactsForm : Form, INotifyPropertyChanged
     {
         private HttpClient client = new HttpClient();
         private User user;
+        private bool _connecteVisible;
+        List<Contact> ListeContacts;
+        public event PropertyChangedEventHandler PropertyChanged;
+
         private delegate void DelegateChargerListeContact();
 
         public ListeContactsForm()
@@ -30,13 +34,57 @@ namespace Contacts
             InitializeComponent();
             toolStripLabelInfo.Text = "";
             user = null;
-            this.Text = "App contact";
+            this.Text = "Ucontact";
             this.dataGridView1.ReadOnly = true;
+
+            Binding b = new Binding("Visible", this, "ConnecteVisible", true, DataSourceUpdateMode.OnPropertyChanged);
+            label3.DataBindings.Clear();
+            label3.DataBindings.Add(b);
+
+            Binding b1 = new Binding("Visible", this, "ConnecteVisible", true, DataSourceUpdateMode.OnPropertyChanged);
+            buttonActualiser.DataBindings.Clear();
+            buttonActualiser.DataBindings.Add(b1);
+
+        }
+
+        public bool ConnecteVisible
+        {
+            get { return _connecteVisible; }
+            set
+            {
+                if (value == _connecteVisible)
+                    return;
+                _connecteVisible = value;
+                OnPropertyChanged("ConnecteVisible");
+            }
+        }
+
+        protected virtual void OnPropertyChanged(string PropertyName)
+        {
+            if (PropertyChanged != null)
+                PropertyChanged(this, new PropertyChangedEventArgs(PropertyName));
         }
 
         private void buttonConnexion_Click(object sender, EventArgs e)
         {
-            this.ChargerListeContacts();
+            if (string.IsNullOrEmpty(textBoxLogin.Text.Trim()) || string.IsNullOrEmpty(textBoxPassword.Text.Trim()))
+                return;
+
+
+            if (buttonConnexion.Text == "Connexion")
+                this.ChargerListeContacts();
+            else
+            {
+                textBoxLogin.Enabled = true;
+                textBoxPassword.Enabled = true;
+                textBoxLogin.Text = "";
+                textBoxPassword.Text = "";
+                buttonConnexion.Text = "Connexion";
+                user = null;
+                ConnecteVisible = false;
+                dataGridView1.DataSource = null;
+                toolStripLabelInfo.Text = "";
+            }
         }
 
         private void ChargerListeContacts()
@@ -56,12 +104,18 @@ namespace Contacts
                 {
                     toolStripLabelInfo.Text = "Utilisateur non valide.";
                 }
+                else
+                {
+                    textBoxLogin.Enabled = false;
+                    textBoxPassword.Enabled = false;
+                    buttonConnexion.Text = "Déconnexion";
+                }
 
                 strJson = ApiContact.GetStringJSonContacts(user);
 
-                List<Contact> contacts = GestionContacts.GetContacts(strJson);
+                ListeContacts = GestionContacts.GetContacts(strJson);
 
-                SetDataGridView(GetDataTableFromListContacts(contacts));
+                SetDataGridView(GetDataTableFromListContacts(ListeContacts));
             }
             catch (Exception ex)
             {
@@ -71,6 +125,8 @@ namespace Contacts
             {
                 this.Cursor = Cursors.Default;
             }
+
+            ConnecteVisible = (user != null);
         }
 
         private void SetDataGridView(DataTable table)
@@ -85,7 +141,7 @@ namespace Contacts
 
                 int x = 0;
 
-                foreach(DataGridViewColumn c in dataGridView1.Columns)
+                foreach (DataGridViewColumn c in dataGridView1.Columns)
                 {
                     x = x + c.Width;
                 }
@@ -126,7 +182,7 @@ namespace Contacts
 
             //génère les lignes du tableau
             DataRow r = null;
-            
+
             foreach (Contact item in contacts)
             {
                 r = table.NewRow();
@@ -140,16 +196,16 @@ namespace Contacts
                 //ajoute les données du contact à une ligne du tableau
 
                 foreach (Donnee d in donnees)
-                {       
-                    if (d.isAccueil() )
+                {
+                    if (d.isAccueil())
                     {
-                        r[d.getLibellechamp()] = d.getValeur();                        
+                        r[d.getLibellechamp()] = d.getValeur();
                     }
                 }
 
-                table.Rows.Add(r);                
+                table.Rows.Add(r);
             }
-            
+
             return table;
         }
 
@@ -160,11 +216,63 @@ namespace Contacts
 
             Template template = GestionContacts.GetTemplate(ApiContact.GetStringJSonTemplate(user));
 
-            if (template!=null)
+            if (template != null)
             {
                 DelegateChargerListeContact d = ChargerListeContacts;
-                FicheContactForm w = new FicheContactForm(template,user.getIduser(),d);
+
+
+                FicheContactForm w = new FicheContactForm(template, user.getIduser(), d);
                 w.ShowDialog();
+            }
+        }
+
+        private void buttonSupprimer_Click(object sender, EventArgs e)
+        {
+            if (dataGridView1.CurrentRow != null)
+            {
+                Console.WriteLine(dataGridView1.CurrentRow.Cells[0]);
+
+                long idcontact = long.Parse(dataGridView1.CurrentRow.Cells[0].Value.ToString());
+                if (ListeContacts != null)
+                {
+                    Contact c = ListeContacts.Where(x => x.getIdcontact() == idcontact).FirstOrDefault();
+                    if (c != null)
+                    {
+                        ApiContact.DeleteContact(c);
+                        ChargerListeContacts();
+                    }
+
+                }
+            }
+        }
+
+        private void buttonActualiser_Click(object sender, EventArgs e)
+        {
+            ChargerListeContacts();
+        }
+
+        private void buttonModifier_Click(object sender, EventArgs e)
+        {
+            if (user == null || dataGridView1.CurrentRow==null)
+                return;
+
+            Template template = GestionContacts.GetTemplate(ApiContact.GetStringJSonTemplate(user));
+
+            if (template != null && ListeContacts!=null)
+            {
+                DelegateChargerListeContact d = ChargerListeContacts;
+
+
+                long idcontact = long.Parse(dataGridView1.CurrentRow.Cells[0].Value.ToString());
+                if (ListeContacts != null)
+                {
+                    Contact c = ListeContacts.Where(x => x.getIdcontact() == idcontact).FirstOrDefault();
+                    if (c != null)
+                    {
+                        FicheContactForm w = new FicheContactForm(template, user.getIduser(), d,c);
+                        w.ShowDialog();
+                    }
+                }
             }
         }
     }

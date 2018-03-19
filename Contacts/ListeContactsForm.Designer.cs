@@ -41,9 +41,9 @@
             this.buttonAjouter = new System.Windows.Forms.Button();
             this.buttonSupprimer = new System.Windows.Forms.Button();
             this.label3 = new System.Windows.Forms.Label();
-            this.buttonActualiser = new System.Windows.Forms.Button();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.buttonModifier = new System.Windows.Forms.Button();
+            this.buttonActualiser = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.toolStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -54,7 +54,6 @@
             this.textBoxLogin.Name = "textBoxLogin";
             this.textBoxLogin.Size = new System.Drawing.Size(253, 20);
             this.textBoxLogin.TabIndex = 0;
-            this.textBoxLogin.Text = "user1@hotmail.fr";
             // 
             // textBoxPassword
             // 
@@ -62,7 +61,6 @@
             this.textBoxPassword.Name = "textBoxPassword";
             this.textBoxPassword.Size = new System.Drawing.Size(253, 20);
             this.textBoxPassword.TabIndex = 1;
-            this.textBoxPassword.Text = "user1";
             // 
             // label1
             // 
@@ -156,6 +154,16 @@
             this.label3.TabIndex = 10;
             this.label3.Text = "Connecté";
             // 
+            // buttonModifier
+            // 
+            this.buttonModifier.Location = new System.Drawing.Point(135, 439);
+            this.buttonModifier.Name = "buttonModifier";
+            this.buttonModifier.Size = new System.Drawing.Size(75, 23);
+            this.buttonModifier.TabIndex = 12;
+            this.buttonModifier.Text = "Modifier";
+            this.buttonModifier.UseVisualStyleBackColor = true;
+            this.buttonModifier.Click += new System.EventHandler(this.buttonModifier_Click);
+            // 
             // buttonActualiser
             // 
             this.buttonActualiser.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("buttonActualiser.BackgroundImage")));
@@ -167,16 +175,6 @@
             this.toolTip1.SetToolTip(this.buttonActualiser, "Rafraîchir");
             this.buttonActualiser.UseVisualStyleBackColor = true;
             this.buttonActualiser.Click += new System.EventHandler(this.buttonActualiser_Click);
-            // 
-            // buttonModifier
-            // 
-            this.buttonModifier.Location = new System.Drawing.Point(135, 439);
-            this.buttonModifier.Name = "buttonModifier";
-            this.buttonModifier.Size = new System.Drawing.Size(75, 23);
-            this.buttonModifier.TabIndex = 12;
-            this.buttonModifier.Text = "Modifier";
-            this.buttonModifier.UseVisualStyleBackColor = true;
-            this.buttonModifier.Click += new System.EventHandler(this.buttonModifier_Click);
             // 
             // ListeContactsForm
             // 
@@ -222,9 +220,9 @@
         private System.Windows.Forms.Button buttonAjouter;
         private System.Windows.Forms.Button buttonSupprimer;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.Button buttonActualiser;
         private System.Windows.Forms.ToolTip toolTip1;
         private System.Windows.Forms.Button buttonModifier;
+        private System.Windows.Forms.Button buttonActualiser;
     }
 }
 

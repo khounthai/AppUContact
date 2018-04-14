@@ -220,7 +220,6 @@ namespace Contacts
             {
                 DelegateChargerListeContact d = ChargerListeContacts;
 
-
                 FicheContactForm w = new FicheContactForm(template, user.getIduser(), d);
                 w.ShowDialog();
             }

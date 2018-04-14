@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Contacts.classes
 {
-    class GestionContacts
+    public class GestionContacts
     {
         private static JsonSerializerSettings setting = new JsonSerializerSettings
         {

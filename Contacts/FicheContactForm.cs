@@ -198,7 +198,7 @@ namespace Contacts
             return b;
         }
         
-        private Contact NouveauContact()
+        public Contact NouveauContact()
         {
 
             if (this.contact == null)
